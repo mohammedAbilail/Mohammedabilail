@@ -1,23 +1,29 @@
-//Setup
-const express = require('express');
-const mongoose = require('mongoose')
-const path = require('path');
-const bodyParser = require('body-parser');
+/*********************************************************************************
+*  WEB422 – Assignment 1
+*  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  
+*  No part of this assignment has been copied manually or electronically from any other source
+*  (including web sites) or distributed to other students.
+* 
+*  Name: Loveneet Kaur        Student ID: 150002210      Date: January 17, 2023
+*  Cyclic Link: 
+*
+********************************************************************************/
+const express = require("express");
+const bodyparser = require("body-parser");
 const app = express();
-const HTTP_PORT = process.env.PORT || 8080;
-const cors=require('cors');
+var cors = require('cors');
 const MoviesDB = require("./modules/moviesDB.js");
 const db = new MoviesDB();
 
+const HTTP_PORT = process.env.PORT || 8080;
 
-app.use(bodyParser.json());
 app.use(cors());
-require('dotenv').config(); 
 app.use(express.json());
+require('dotenv').config();
 
-app.get('/',(req,res)=>{
-    res.json({message: "API Listening"});
-})
+app.get("/", (req, res) => {
+    res.json({ message: 'API Listening' });
+});
 
 app.post("/api/movies", (req, res) => {
     db.addNewMovie(req.body).then((data) => {
@@ -62,10 +68,13 @@ app.delete("/api/movies/:_id", (req, res) => {
     })
 });
 
-db.initialize(process.env.MONGODB_CONN_STRING).then(()=>{
-    app.listen(HTTP_PORT, ()=>{
-        console.log(`server listening on: ${HTTP_PORT}`);
-    });
-}).catch((err)=>{
-    console.log(err);
+app.use(function(req,res){
+    res.status(404).send("Resource not found");
 });
+
+db.initialize(process.env.MONGODB_CONN_STRING)
+    .then(() => {
+        app.listen(HTTP_PORT);
+    }).catch((err) => {
+        console.log(err);
+    });
