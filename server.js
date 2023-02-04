@@ -4,12 +4,11 @@
 *  No part of this assignment has been copied manually or electronically from any other source
 *  (including web sites) or distributed to other students.
 * 
-*  Name: Loveneet Kaur   Student ID: 150002210    Date: January 17th,2022
-*  Cyclic Link:   https://lively-bonnet-duck.cyclic.app/
-********************************************************************************/ 
+*  Name:    Student ID:     Date: 
+*  Cyclic Link:   
+********************************************************************************/
 
 const express = require("express");
-const bodyparser = require("body-parser");
 const app = express();
 var cors = require('cors');
 const MoviesDB = require("./modules/moviesDB.js");
@@ -27,9 +26,9 @@ app.get("/", (req, res) => {
 
 app.post("/api/movies", (req, res) => {
     db.addNewMovie(req.body).then((data) => {
-        res.json(data);
+        res.status(201).json(data);
     }).catch((err) => {
-        console.log(err);
+        console.status(500).log(err);
     })
 });
 
@@ -40,7 +39,7 @@ app.get("/api/movies", (req, res) => {
     db.getAllMovies(page, perPage, title).then((data) => {
         res.json(data);
     }).catch((err) => {
-        console.log(err);
+        console.status(500).log(err);
     })
 });
 
@@ -48,28 +47,19 @@ app.get("/api/movies/:_id", (req, res) => {
     db.getMovieById(req.params._id).then((data) => {
         res.json(data);
     }).catch((err) => {
-        console.log(err);
+        console.status(500).log(err);
     })
 });
 
-app.put("/api/movie/:_id", (req, res) => {
+app.put("/api/movie/:id", (req, res) => {
     db.updateMovieById(req.body, req.params._id).then((data) => {
-        console.log("Successfully updated a movie!");
-    }).catch((err) => {
-        console.log(err);
+        res.json("Movie Updated");
     })
 });
 
-app.delete("/api/movies/:_id", (req, res) => {
-    db.deleteMovieById(req.params._id).then((data) => {
-        console.log("Successfully deleted a movie!");
-    }).catch((err) => {
-        console.log(err);
-    })
-});
-
-app.use(function(req,res){
-    res.status(404).send("Resource not found");
+app.delete("/api/movies/:id", (req, res) => {
+    db.deleteMovieById(req.params._id);
+    res.status(204).end();
 });
 
 db.initialize(process.env.MONGODB_CONN_STRING)
